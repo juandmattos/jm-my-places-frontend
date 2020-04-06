@@ -11,16 +11,10 @@ const PlaceItem = props => {
   const [showConfirmModal, setShowConfirmModal] = useState(false)
 
   const openMapHandler = () => setShowMap(true)
-
   const closeMapHandler = () => setShowMap(false)
 
-  const showDeleteWarningHandler = () => {
-    setShowConfirmModal(true)
-  }
-
-  const cancelDeleteHandler = () => {
-    setShowConfirmModal(false)
-  }
+  const showDeleteWarningHandler = () => setShowConfirmModal(true)
+  const cancelDeleteHandler = () => setShowConfirmModal(false)
 
   const confirmDeleteHandler = () => {
     setShowConfirmModal(false)
