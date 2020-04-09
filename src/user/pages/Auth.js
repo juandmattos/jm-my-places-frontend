@@ -11,6 +11,7 @@ import {
 import { useForm } from '../../shared/hooks/form-hook'
 import { AuthContext } from '../../shared/context/auth-context'
 import './Auth.css'
+const { REACT_APP_PLACES_URL } = process.env;
 
 const Auth = () => {
   const auth = useContext(AuthContext)
@@ -54,9 +55,32 @@ const Auth = () => {
     setIsLoginMode(prevMode => !prevMode)
   }
 
-  const authSubmitHandler = event => {
+  const authSubmitHandler = async event => {
     event.preventDefault()
-    console.log(formState.inputs)
+    if (auth.isLoginMode) {
+
+    } else {
+      try {
+        const response = await fetch(
+          `${REACT_APP_PLACES_URL}/users/signup`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              name: formState.inputs.name.value,
+              email: formState.inputs.email.value,
+              password: formState.inputs.password.value
+            })
+          }
+        )
+        const responseData = await response.json()
+        console.log(responseData)
+      } catch (err) {
+        console.log(err)
+      }
+    }
     auth.login()
   }
 
@@ -90,7 +114,7 @@ const Auth = () => {
           id='password'
           type='password'
           label='Password'
-          validators={[VALIDATOR_MINLENGTH(5)]}
+          validators={[VALIDATOR_MINLENGTH(6)]}
           errorText='Please enter a valid password, at least 5 characters.'
           onInput={inputHandler}
         />
