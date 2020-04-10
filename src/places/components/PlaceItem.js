@@ -4,27 +4,45 @@ import Card from '../../shared/components/UIElements/Card'
 import Button from '../../shared/components/FormElements/Button'
 import Modal from '../../shared/components/UIElements/Modal'
 import Map from '../../shared/components/UIElements/Map'
+import ErrorModal from '../../shared/components/UIElements/ErrorModal'
+import LoadingSpinner from '../../shared/components/UIElements/LoadingSpinner'
 import { AuthContext } from '../../shared/context/auth-context'
+import { useHttpClient } from '../../shared/hooks/http-hook'
 import './PlaceItem.css'
+const { REACT_APP_PLACES_URL } = process.env
 
 const PlaceItem = props => {
+  const { isLoading, error, sendRequest, clearError } = useHttpClient()
   const auth = useContext(AuthContext)
   const [showMap, setShowMap] = useState(false)
   const [showConfirmModal, setShowConfirmModal] = useState(false)
 
   const openMapHandler = () => setShowMap(true)
+
   const closeMapHandler = () => setShowMap(false)
 
-  const showDeleteWarningHandler = () => setShowConfirmModal(true)
-  const cancelDeleteHandler = () => setShowConfirmModal(false)
+  const showDeleteWarningHandler = () => {
+    setShowConfirmModal(true)
+  }
 
-  const confirmDeleteHandler = () => {
+  const cancelDeleteHandler = () => {
     setShowConfirmModal(false)
-    console.log('DELETING...')
+  }
+
+  const confirmDeleteHandler = async () => {
+    setShowConfirmModal(false)
+    try {
+      await sendRequest(
+        `${REACT_APP_PLACES_URL}/places/${props.id}`,
+        'DELETE'
+      )
+      props.onDelete(props.id)
+    } catch (err) {}
   }
 
   return (
     <React.Fragment>
+      <ErrorModal error={error} onClear={clearError} />
       <Modal
         show={showMap}
         onCancel={closeMapHandler}
@@ -60,6 +78,7 @@ const PlaceItem = props => {
       </Modal>
       <li className='place-item'>
         <Card className='place-item__content'>
+          {isLoading && <LoadingSpinner asOverlay />}
           <div className='place-item__image'>
             <img src={props.image} alt={props.title} />
           </div>
@@ -73,10 +92,9 @@ const PlaceItem = props => {
               VIEW ON MAP
             </Button>
             {auth.isLoggedIn && (
-              <Button to={`/places/${props.id}`}>
-                EDIT
-              </Button>
+              <Button to={`/places/${props.id}`}>EDIT</Button>
             )}
+
             {auth.isLoggedIn && (
               <Button danger onClick={showDeleteWarningHandler}>
                 DELETE
