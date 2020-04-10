@@ -64,7 +64,7 @@ const Auth = () => {
 
     if (isLoginMode) {
       try {
-        await sendRequest(
+        const responseData = await sendRequest(
           `${REACT_APP_PLACES_URL}/users/login`,
           'POST',
           JSON.stringify({
@@ -75,11 +75,11 @@ const Auth = () => {
             'Content-Type': 'application/json'
           }
         )
-        auth.login()
+        auth.login(responseData.user.id)
       } catch (err) {}
     } else {
       try {
-        await sendRequest(
+        const responseData = await sendRequest(
           `${REACT_APP_PLACES_URL}/users/signup`,
           'POST',
           JSON.stringify({
@@ -92,7 +92,7 @@ const Auth = () => {
           }
         )
 
-        auth.login()
+        auth.login(responseData.user.id)
       } catch (err) {}
     }
   }
