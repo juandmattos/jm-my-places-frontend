@@ -11,15 +11,15 @@ import {
   VALIDATOR_REQUIRE
 } from '../../shared/util/validators'
 import { useForm } from '../../shared/hooks/form-hook'
+import { useHttpClient } from '../../shared/hooks/http-hook'
 import { AuthContext } from '../../shared/context/auth-context'
 import './Auth.css'
-const { REACT_APP_PLACES_URL } = process.env;
+const { REACT_APP_PLACES_URL } = process.env
 
 const Auth = () => {
   const auth = useContext(AuthContext)
   const [isLoginMode, setIsLoginMode] = useState(true)
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState()
+  const { isLoading, error, sendRequest, clearError } = useHttpClient()
 
   const [formState, inputHandler, setFormData] = useForm(
     {
@@ -61,45 +61,45 @@ const Auth = () => {
 
   const authSubmitHandler = async event => {
     event.preventDefault()
-    if (auth.isLoginMode) {
 
-    } else {
+    if (isLoginMode) {
       try {
-        setIsLoading(true)
-        const response = await fetch(
-          `${REACT_APP_PLACES_URL}/users/signup`,
+        await sendRequest(
+          `${REACT_APP_PLACES_URL}/users/login`,
+          'POST',
+          JSON.stringify({
+            email: formState.inputs.email.value,
+            password: formState.inputs.password.value
+          }),
           {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              name: formState.inputs.name.value,
-              email: formState.inputs.email.value,
-              password: formState.inputs.password.value
-            })
+            'Content-Type': 'application/json'
           }
         )
-        const responseData = await response.json()
-        if (!response.ok) {
-          throw new Error(responseData.message)
-        }
-        console.log(responseData)
-        setIsLoading(false)
         auth.login()
-      } catch (err) {
-        console.log(err)
-        setIsLoading(false)
-        setError(err.message || 'Something went wrong, please try again')
-      }
+      } catch (err) {}
+    } else {
+      try {
+        await sendRequest(
+          `${REACT_APP_PLACES_URL}/users/signup`,
+          'POST',
+          JSON.stringify({
+            name: formState.inputs.name.value,
+            email: formState.inputs.email.value,
+            password: formState.inputs.password.value
+          }),
+          {
+            'Content-Type': 'application/json'
+          }
+        )
+
+        auth.login()
+      } catch (err) {}
     }
   }
 
-  const errorHandler = () => setError(null)
-
   return (
     <React.Fragment>
-      <ErrorModal error={error} onClear={errorHandler} />
+      <ErrorModal error={error} onClear={clearError} />
       <Card className='authentication'>
         {isLoading && <LoadingSpinner asOverlay />}
         <h2>Login Required</h2>
@@ -130,7 +130,7 @@ const Auth = () => {
             id='password'
             type='password'
             label='Password'
-            validators={[VALIDATOR_MINLENGTH(6)]}
+            validators={[VALIDATOR_MINLENGTH(5)]}
             errorText='Please enter a valid password, at least 5 characters.'
             onInput={inputHandler}
           />
