@@ -42,7 +42,7 @@ const NewPlace = () => {
     event.preventDefault()
     try {
       await sendRequest(
-        `${REACT_APP_PLACES_URL}/places`,
+        `${REACT_APP_PLACES_URL}/api/places`,
         'POST',
         JSON.stringify({
           title: formState.inputs.title.value,
