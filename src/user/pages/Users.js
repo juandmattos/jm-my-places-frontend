@@ -3,7 +3,7 @@ import UsersList from '../components/UsersList'
 import ErrorModal from '../../shared/components/UIElements/ErrorModal'
 import LoadingSpinner from '../../shared/components/UIElements/LoadingSpinner'
 import { useHttpClient } from '../../shared/hooks/http-hook'
-const { REACT_APP_PLACES_URL } = process.env
+const { REACT_APP_BACKEND_URL } = process.env
 
 const Users = () => {
   const { isLoading, error, sendRequest, clearError } = useHttpClient()
@@ -12,7 +12,7 @@ const Users = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const responseData = await sendRequest(`${REACT_APP_PLACES_URL}/api/users`)
+        const responseData = await sendRequest(`${REACT_APP_BACKEND_URL}/users`)
         setLoadedUsers(responseData.users)
       } catch (err) {}
     }

@@ -14,7 +14,7 @@ import { useForm } from '../../shared/hooks/form-hook'
 import { useHttpClient } from '../../shared/hooks/http-hook'
 import { AuthContext } from '../../shared/context/auth-context'
 import './PlaceForm.css'
-const { REACT_APP_PLACES_URL } = process.env
+const { REACT_APP_BACKEND_URL } = process.env
 
 const UpdatePlace = () => {
   const auth = useContext(AuthContext)
@@ -41,7 +41,7 @@ const UpdatePlace = () => {
     const fetchPlace = async () => {
       try {
         const responseData = await sendRequest(
-          `${REACT_APP_PLACES_URL}/api/places/${placeId}`
+          `${REACT_APP_BACKEND_URL}/places/${placeId}`
         )
         setLoadedPlace(responseData.place)
         setFormData(
@@ -67,7 +67,7 @@ const UpdatePlace = () => {
     event.preventDefault()
     try {
       await sendRequest(
-        `${REACT_APP_PLACES_URL}/api/places/${placeId}`,
+        `${REACT_APP_BACKEND_URL}/places/${placeId}`,
         'PATCH',
         JSON.stringify({
           title: formState.inputs.title.value,

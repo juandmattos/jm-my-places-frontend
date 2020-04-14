@@ -14,7 +14,7 @@ import { useForm } from '../../shared/hooks/form-hook'
 import { useHttpClient } from '../../shared/hooks/http-hook'
 import { AuthContext } from '../../shared/context/auth-context'
 import './PlaceForm.css'
-const { REACT_APP_PLACES_URL } = process.env
+const { REACT_APP_BACKEND_URL } = process.env
 
 const NewPlace = () => {
   const auth = useContext(AuthContext)
@@ -52,7 +52,7 @@ const NewPlace = () => {
       formData.append('address', formState.inputs.address.value)
       formData.append('image', formState.inputs.image.value)
       await sendRequest(
-        `${REACT_APP_PLACES_URL}/api/places`,
+        `${REACT_APP_BACKEND_URL}/places`,
         'POST',
         formData,
         {

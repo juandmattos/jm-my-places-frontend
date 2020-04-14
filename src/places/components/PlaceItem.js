@@ -9,7 +9,7 @@ import LoadingSpinner from '../../shared/components/UIElements/LoadingSpinner'
 import { AuthContext } from '../../shared/context/auth-context'
 import { useHttpClient } from '../../shared/hooks/http-hook'
 import './PlaceItem.css'
-const { REACT_APP_PLACES_URL } = process.env
+const { REACT_APP_BACKEND_URL, REACT_APP_ASSET_URL } = process.env
 
 const PlaceItem = props => {
   const { isLoading, error, sendRequest, clearError } = useHttpClient()
@@ -33,7 +33,7 @@ const PlaceItem = props => {
     setShowConfirmModal(false)
     try {
       await sendRequest(
-        `${REACT_APP_PLACES_URL}/api/places/${props.id}`,
+        `${REACT_APP_BACKEND_URL}/places/${props.id}`,
         'DELETE',
         null,
         {
@@ -84,7 +84,7 @@ const PlaceItem = props => {
         <Card className='place-item__content'>
           {isLoading && <LoadingSpinner asOverlay />}
           <div className='place-item__image'>
-            <img src={`${REACT_APP_PLACES_URL}/${props.image}`} alt={props.title} />
+            <img src={`${REACT_APP_ASSET_URL}/${props.image}`} alt={props.title} />
           </div>
           <div className='place-item__info'>
             <h2>{props.title}</h2>

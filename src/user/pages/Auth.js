@@ -15,7 +15,7 @@ import { useForm } from '../../shared/hooks/form-hook'
 import { useHttpClient } from '../../shared/hooks/http-hook'
 import { AuthContext } from '../../shared/context/auth-context'
 import './Auth.css'
-const { REACT_APP_PLACES_URL } = process.env
+const { REACT_APP_BACKEND_URL } = process.env
 
 const Auth = () => {
   const auth = useContext(AuthContext)
@@ -71,7 +71,7 @@ const Auth = () => {
     if (isLoginMode) {
       try {
         const responseData = await sendRequest(
-          `${REACT_APP_PLACES_URL}/api/users/login`,
+          `${REACT_APP_BACKEND_URL}/users/login`,
           'POST',
           JSON.stringify({
             email: formState.inputs.email.value,
@@ -91,7 +91,7 @@ const Auth = () => {
         formData.append('password', formState.inputs.password.value)
         formData.append('image', formState.inputs.image.value)
         const responseData = await sendRequest(
-          `${REACT_APP_PLACES_URL}/api/users/signup`,
+          `${REACT_APP_BACKEND_URL}/users/signup`,
           'POST',
           formData
         )
